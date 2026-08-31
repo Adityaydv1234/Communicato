@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SpeakUp</title>
+<style>
+  :root {
+    --ink: #1c1c2e;
+    --ink-secondary: #5a5a72;
+    --surface: #faf9f6;
+    --surface-raised: #ffffff;
+    --border: #e2e1dc;
+    --accent: #d95040;
+    --accent-soft: #fdf0ee;
+    --teal: #1a7a6d;
+    --teal-soft: #eaf6f4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    background: var(--surface);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .app {
+    width: 100%;
+    max-width: 560px;
+  }
+  h1 {
+    font-size: 22px;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .sub {
+    color: var(--ink-secondary);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .card {
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(28,28,46,0.06);
+  }
+  .scenario-title {
+    font-weight: 650;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  .scenario-text {
+    font-size: 14px;
+    color: var(--ink-secondary);
+    line-height: 1.6;
+  }
+  #transcript {
+    max-height: 320px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-right: 4px;
+  }
+  .msg {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 85%;
+  }
+  .msg.user {
+    background: var(--accent-soft);
+    align-self: flex-end;
+    color: var(--ink);
+  }
+  .msg.assistant {
+    background: var(--teal-soft);
+    align-self: flex-start;
+    color: var(--ink);
+  }
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  #talkBtn {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent);
+    color: white;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.15s;
+    user-select: none;
+  }
+  #talkBtn:active, #talkBtn.recording {
+    transform: scale(0.94);
+    background: #b83e30;
+  }
+  #talkBtn:disabled {
+    background: #b8b8c4;
+    cursor: not-allowed;
+  }
+  #status {
+    font-size: 13px;
+    color: var(--ink-secondary);
+    min-height: 18px;
+  }
+  #endBtn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--ink-secondary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  #endBtn:hover { background: var(--surface); }
+  #newBtn, #retryBtn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .weakness-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  .eval-explanation {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .exercise-box {
+    background: var(--teal-soft);
+    border-left: 3px solid var(--teal);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .exercise-box strong { color: var(--teal); }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>SpeakUp</h1>
+  <div class="sub">Hold the button, talk, let go. See how it goes when you're done.</div>
+
+  <div id="loadingScreen" class="card">Loading a challenge...</div>
+
+  <div id="practiceScreen" class="hidden">
+    <div class="card">
+      <div class="scenario-title" id="scenarioTitle"></div>
+      <div class="scenario-text" id="scenarioText"></div>
+    </div>
+
+    <div class="card">
+      <div id="transcript"></div>
+      <div class="controls">
+        <button id="talkBtn">Hold to talk</button>
+        <div id="status"></div>
+        <button id="endBtn">End & get feedback</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="evalScreen" class="hidden">
+    <div class="card">
+      <div class="weakness-label" id="weaknessLabel"></div>
+      <div class="eval-explanation" id="weaknessExplanation"></div>
+      <div class="exercise-box"><strong>Try this next time:</strong> <span id="exerciseText"></span></div>
+    </div>
+    <div style="text-align:center;">
+      <button id="newBtn">Practice again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let sessionId = null;
+let mediaRecorder = null;
+let chunks = [];
+let currentAudio = null;
+
+const loadingScreen = document.getElementById('loadingScreen');
+const practiceScreen = document.getElementById('practiceScreen');
+const evalScreen = document.getElementById('evalScreen');
+const talkBtn = document.getElementById('talkBtn');
+const statusEl = document.getElementById('status');
+const transcriptEl = document.getElementById('transcript');
+const endBtn = document.getElementById('endBtn');
+const newBtn = document.getElementById('newBtn');
+
+function addMessage(role, text) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.textContent = text;
+  transcriptEl.appendChild(div);
+  transcriptEl.scrollTop = transcriptEl.scrollHeight;
+}
+
+async function startChallenge() {
+  loadingScreen.classList.remove('hidden');
+  practiceScreen.classList.add('hidden');
+  evalScreen.classList.add('hidden');
+  transcriptEl.innerHTML = '';
+
+  const challengeRes = await fetch('/api/challenges/random');
+  const challenge = await challengeRes.json();
+
+  const sessionRes = await fetch('/api/sessions?challenge_id=' + challenge.id, { method: 'POST' });
+  const sessionData = await sessionRes.json();
+  sessionId = sessionData.session_id;
+
+  document.getElementById('scenarioTitle').textContent = challenge.title;
+  document.getElementById('scenarioText').textContent = challenge.scenario;
+
+  loadingScreen.classList.add('hidden');
+  practiceScreen.classList.remove('hidden');
+  statusEl.textContent = 'Hold the button and speak';
+}
+
+async function initRecorder() {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+  mediaRecorder.ondataavailable = e => chunks.push(e.data);
+  mediaRecorder.onstop = handleRecordingStop;
+}
+
+async function handleRecordingStop() {
+  const blob = new Blob(chunks, { type: 'audio/webm' });
+  chunks = [];
+  statusEl.textContent = 'Thinking...';
+  talkBtn.disabled = true;
+
+  const formData = new FormData();
+  formData.append('audio', blob, 'recording.webm');
+
+  const res = await fetch('/api/sessions/' + sessionId + '/message', {
+    method: 'POST',
+    body: formData,
+  });
+  const data = await res.json();
+
+  addMessage('user', data.transcript);
+  addMessage('assistant', data.ai_text);
+
+  currentAudio = new Audio(data.ai_audio_url);
+  statusEl.textContent = 'AI is speaking...';
+  currentAudio.play();
+  currentAudio.onended = () => {
+    statusEl.textContent = 'Hold the button and speak';
+    talkBtn.disabled = false;
+  };
+}
+
+talkBtn.addEventListener('mousedown', async () => {
+  if (!mediaRecorder) await initRecorder();
+  chunks = [];
+  mediaRecorder.start();
+  talkBtn.classList.add('recording');
+  statusEl.textContent = 'Listening...';
+});
+
+talkBtn.addEventListener('mouseup', () => {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+    talkBtn.classList.remove('recording');
+  }
+});
+
+endBtn.addEventListener('click', async () => {
+  statusEl.textContent = 'Analyzing your conversation...';
+  talkBtn.disabled = true;
+  endBtn.disabled = true;
+
+  const res = await fetch('/api/sessions/' + sessionId + '/end', { method: 'POST' });
+  if (!res.ok) {
+    statusEl.textContent = 'Say something before ending the session.';
+    talkBtn.disabled = false;
+    endBtn.disabled = false;
+    return;
+  }
+  const evaluation = await res.json();
+
+  document.getElementById('weaknessLabel').textContent = evaluation.primary_weakness;
+  document.getElementById('weaknessExplanation').textContent = evaluation.weakness_explanation;
+  document.getElementById('exerciseText').textContent = evaluation.exercise;
+
+  practiceScreen.classList.add('hidden');
+  evalScreen.classList.remove('hidden');
+});
+
+newBtn.addEventListener('click', startChallenge);
+
+startChallenge();
+</script>
+</body>
+</html>
