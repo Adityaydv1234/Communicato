@@ -4,17 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SpeakUp</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
   :root {
     --ink: #1c1c2e;
     --ink-secondary: #5a5a72;
+    --ink-tertiary: #8a8a9e;
     --surface: #faf9f6;
     --surface-raised: #ffffff;
+    --surface-sunken: #f0efec;
     --border: #e2e1dc;
     --accent: #d95040;
     --accent-soft: #fdf0ee;
     --teal: #1a7a6d;
     --teal-soft: #eaf6f4;
+    --amber: #b8860b;
+    --amber-soft: #fdf6e8;
   }
   * { box-sizing: border-box; }
   body {
@@ -23,25 +28,37 @@
     background: var(--surface);
     color: var(--ink);
     min-height: 100vh;
+    padding: 24px 16px 60px;
+  }
+  .app { width: 100%; max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--ink-secondary); font-size: 14px; margin-bottom: 20px; }
+
+  .nav-tabs {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
   }
-  .app {
-    width: 100%;
-    max-width: 560px;
-  }
-  h1 {
-    font-size: 22px;
-    margin: 0 0 4px;
-    letter-spacing: -0.01em;
-  }
-  .sub {
+  .nav-tab {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-raised);
     color: var(--ink-secondary);
-    font-size: 14px;
-    margin-bottom: 24px;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+    text-align: center;
   }
+  .nav-tab.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
   .card {
     background: var(--surface-raised);
     border: 1px solid var(--border);
@@ -50,16 +67,9 @@
     margin-bottom: 16px;
     box-shadow: 0 1px 3px rgba(28,28,46,0.06);
   }
-  .scenario-title {
-    font-weight: 650;
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-  .scenario-text {
-    font-size: 14px;
-    color: var(--ink-secondary);
-    line-height: 1.6;
-  }
+  .scenario-title { font-weight: 650; font-size: 16px; margin-bottom: 8px; }
+  .scenario-text { font-size: 14px; color: var(--ink-secondary); line-height: 1.6; }
+
   #transcript {
     max-height: 320px;
     overflow-y: auto;
@@ -69,154 +79,239 @@
     margin-bottom: 16px;
     padding-right: 4px;
   }
-  .msg {
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-    max-width: 85%;
-  }
-  .msg.user {
-    background: var(--accent-soft);
-    align-self: flex-end;
-    color: var(--ink);
-  }
-  .msg.assistant {
-    background: var(--teal-soft);
-    align-self: flex-start;
-    color: var(--ink);
-  }
-  .controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
+  .msg { padding: 10px 14px; border-radius: 10px; font-size: 14px; line-height: 1.5; max-width: 85%; }
+  .msg.user { background: var(--accent-soft); align-self: flex-end; color: var(--ink); }
+  .msg.assistant { background: var(--teal-soft); align-self: flex-start; color: var(--ink); }
+
+  .controls { display: flex; flex-direction: column; align-items: center; gap: 10px; }
   #talkBtn {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    border: none;
-    background: var(--accent);
-    color: white;
-    font-size: 13px;
-    font-weight: 650;
-    cursor: pointer;
-    transition: transform 0.1s, background 0.15s;
-    user-select: none;
+    width: 96px; height: 96px; border-radius: 50%; border: none;
+    background: var(--accent); color: white; font-size: 13px; font-weight: 650;
+    cursor: pointer; transition: transform 0.1s, background 0.15s; user-select: none;
   }
-  #talkBtn:active, #talkBtn.recording {
-    transform: scale(0.94);
-    background: #b83e30;
+  #talkBtn:active, #talkBtn.recording { transform: scale(0.94); background: #b83e30; }
+  #talkBtn:disabled { background: #b8b8c4; cursor: not-allowed; }
+  .status-text { font-size: 13px; color: var(--ink-secondary); min-height: 18px; }
+
+  .btn-outline {
+    background: none; border: 1px solid var(--border); color: var(--ink-secondary);
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 8px;
   }
-  #talkBtn:disabled {
-    background: #b8b8c4;
-    cursor: not-allowed;
+  .btn-outline:hover { background: var(--surface); }
+  .btn-primary {
+    background: var(--accent); color: white; border: none; padding: 10px 20px;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
   }
-  #status {
-    font-size: 13px;
-    color: var(--ink-secondary);
-    min-height: 18px;
-  }
-  #endBtn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--ink-secondary);
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-    margin-top: 8px;
-  }
-  #endBtn:hover { background: var(--surface); }
-  #newBtn, #retryBtn {
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
+  .btn-primary:disabled { background: #b8b8c4; cursor: not-allowed; }
+
   .weakness-label {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--accent);
-    background: var(--accent-soft);
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-bottom: 10px;
+    display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--accent); background: var(--accent-soft);
+    padding: 3px 8px; border-radius: 4px; margin-bottom: 10px;
   }
-  .eval-explanation {
-    font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
+  .eval-explanation { font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
   .exercise-box {
-    background: var(--teal-soft);
-    border-left: 3px solid var(--teal);
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
+    background: var(--teal-soft); border-left: 3px solid var(--teal); padding: 12px 16px;
+    border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.5;
   }
   .exercise-box strong { color: var(--teal); }
+  .posture-box {
+    background: var(--amber-soft); border-left: 3px solid var(--amber); padding: 12px 16px;
+    border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.5; margin-top: 12px;
+  }
+  .posture-box strong { color: var(--amber); }
   .hidden { display: none; }
+
+  /* Monologue-specific */
+  .option-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .option-btn {
+    flex: 1; min-width: 56px; padding: 10px 8px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--ink-secondary); font-size: 13px; font-weight: 650;
+    cursor: pointer; text-align: center;
+  }
+  .option-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+  .option-label { font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--ink-tertiary); margin-bottom: 8px; }
+  #cameraPreview {
+    width: 100%; max-width: 320px; border-radius: 10px; background: var(--surface-sunken);
+    display: block; margin: 0 auto 16px; transform: scaleX(-1);
+  }
+  #monoTimer {
+    font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums;
+    text-align: center; margin-bottom: 8px; color: var(--accent);
+  }
+
+  /* Progress */
+  .tip-card {
+    background: var(--teal-soft); border-left: 3px solid var(--teal); padding: 14px 18px;
+    border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.6; margin-bottom: 16px;
+  }
+  #progressChart { max-height: 280px; }
+  .history-row {
+    display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .history-row:last-child { border-bottom: none; }
+  .history-title { color: var(--ink); font-weight: 600; }
+  .history-meta { color: var(--ink-tertiary); }
 </style>
 </head>
 <body>
 <div class="app">
   <h1>SpeakUp</h1>
-  <div class="sub">Hold the button, talk, let go. See how it goes when you're done.</div>
+  <div class="sub">Daily practice for real communication skills.</div>
 
-  <div id="loadingScreen" class="card">Loading a challenge...</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-tab="conversation">Conversation</button>
+    <button class="nav-tab" data-tab="monologue">Monologue</button>
+    <button class="nav-tab" data-tab="progress">Progress</button>
+  </div>
 
-  <div id="practiceScreen" class="hidden">
-    <div class="card">
-      <div class="scenario-title" id="scenarioTitle"></div>
-      <div class="scenario-text" id="scenarioText"></div>
-    </div>
-
-    <div class="card">
-      <div id="transcript"></div>
-      <div class="controls">
-        <button id="talkBtn">Hold to talk</button>
-        <div id="status"></div>
-        <button id="endBtn">End & get feedback</button>
+  <!-- CONVERSATION TAB -->
+  <div id="conversationTab">
+    <div id="convLoading" class="card">Loading a challenge...</div>
+    <div id="convScreen" class="hidden">
+      <div class="card">
+        <div class="scenario-title" id="convScenarioTitle"></div>
+        <div class="scenario-text" id="convScenarioText"></div>
       </div>
+      <div class="card">
+        <div id="transcript"></div>
+        <div class="controls">
+          <button id="talkBtn">Hold to talk</button>
+          <div class="status-text" id="convStatus"></div>
+          <button id="convEndBtn" class="btn-outline">End & get feedback</button>
+        </div>
+      </div>
+    </div>
+    <div id="convEvalScreen" class="hidden">
+      <div class="card">
+        <div class="weakness-label" id="convWeaknessLabel"></div>
+        <div class="eval-explanation" id="convWeaknessExplanation"></div>
+        <div class="exercise-box"><strong>Try this next time:</strong> <span id="convExerciseText"></span></div>
+      </div>
+      <div style="text-align:center;"><button id="convNewBtn" class="btn-primary">Practice again</button></div>
     </div>
   </div>
 
-  <div id="evalScreen" class="hidden">
-    <div class="card">
-      <div class="weakness-label" id="weaknessLabel"></div>
-      <div class="eval-explanation" id="weaknessExplanation"></div>
-      <div class="exercise-box"><strong>Try this next time:</strong> <span id="exerciseText"></span></div>
+  <!-- MONOLOGUE TAB -->
+  <div id="monologueTab" class="hidden">
+    <div id="monoLoading" class="card">Loading a topic...</div>
+
+    <div id="monoSetup" class="hidden">
+      <div class="card">
+        <div class="scenario-title" id="monoTopicTitle"></div>
+        <div class="scenario-text" id="monoTopicText"></div>
+      </div>
+      <div class="card">
+        <div class="option-label">Duration</div>
+        <div class="option-row" id="durationOptions">
+          <button class="option-btn" data-seconds="60">1 min</button>
+          <button class="option-btn" data-seconds="120">2 min</button>
+          <button class="option-btn" data-seconds="180">3 min</button>
+          <button class="option-btn" data-seconds="240">4 min</button>
+          <button class="option-btn" data-seconds="300">5 min</button>
+        </div>
+        <div class="option-label">Camera (posture &amp; gesture feedback)</div>
+        <div class="option-row" id="cameraOptions">
+          <button class="option-btn" data-camera="off">Camera off</button>
+          <button class="option-btn" data-camera="on">Camera on</button>
+        </div>
+        <div style="text-align:center;">
+          <button id="monoStartBtn" class="btn-primary" disabled>Select a duration to start</button>
+        </div>
+      </div>
     </div>
-    <div style="text-align:center;">
-      <button id="newBtn">Practice again</button>
+
+    <div id="monoRecording" class="hidden">
+      <div class="card">
+        <video id="cameraPreview" class="hidden" autoplay playsinline muted></video>
+        <div id="monoTimer">0:00</div>
+        <div class="status-text" id="monoStatus" style="text-align:center;">Recording... speak now</div>
+        <div style="text-align:center; margin-top:12px;">
+          <button id="monoStopBtn" class="btn-outline">Stop early</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="monoResult" class="hidden">
+      <div class="card">
+        <div class="weakness-label" id="monoWeaknessLabel"></div>
+        <div class="eval-explanation" id="monoWeaknessExplanation"></div>
+        <div class="exercise-box"><strong>Try this next time:</strong> <span id="monoExerciseText"></span></div>
+        <div id="monoPostureBox" class="posture-box hidden">
+          <strong>Posture &amp; gestures:</strong> <span id="monoPostureText"></span>
+        </div>
+      </div>
+      <div style="text-align:center;"><button id="monoNewBtn" class="btn-primary">Practice again</button></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS TAB -->
+  <div id="progressTab" class="hidden">
+    <div class="card">
+      <div class="tip-card" id="dailyTip">Loading your tip...</div>
+      <div class="option-row" id="groupOptions">
+        <button class="option-btn active" data-group="day">By day</button>
+        <button class="option-btn" data-group="week">By week</button>
+        <button class="option-btn" data-group="month">By month</button>
+      </div>
+      <canvas id="progressChart"></canvas>
+    </div>
+    <div class="card">
+      <div class="option-label">Session history</div>
+      <div id="historyList"></div>
     </div>
   </div>
 </div>
 
-<script>
-let sessionId = null;
-let mediaRecorder = null;
-let chunks = [];
-let currentAudio = null;
+<script type="module">
+import { PoseLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
 
-const loadingScreen = document.getElementById('loadingScreen');
-const practiceScreen = document.getElementById('practiceScreen');
-const evalScreen = document.getElementById('evalScreen');
+// ---------------------------------------------------------------------------
+// App config
+// ---------------------------------------------------------------------------
+let APP_CONFIG = { posture_analyzer: "mediapipe" };
+try {
+  const res = await fetch('/api/config');
+  APP_CONFIG = await res.json();
+} catch (e) { /* fall back to default */ }
+
+const needsMediaPipe = APP_CONFIG.posture_analyzer === 'mediapipe' || APP_CONFIG.posture_analyzer === 'hybrid';
+const needsKeyframes = APP_CONFIG.posture_analyzer === 'openai_vision' || APP_CONFIG.posture_analyzer === 'hybrid';
+
+// ---------------------------------------------------------------------------
+// Tab navigation
+// ---------------------------------------------------------------------------
+const tabs = document.querySelectorAll('.nav-tab');
+const panels = {
+  conversation: document.getElementById('conversationTab'),
+  monologue: document.getElementById('monologueTab'),
+  progress: document.getElementById('progressTab'),
+};
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    Object.values(panels).forEach(p => p.classList.add('hidden'));
+    panels[tab.dataset.tab].classList.remove('hidden');
+    if (tab.dataset.tab === 'progress') loadProgress();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// CONVERSATION MODE
+// ---------------------------------------------------------------------------
+let convSessionId = null;
+let convRecorder = null;
+let convChunks = [];
+
+const convLoading = document.getElementById('convLoading');
+const convScreen = document.getElementById('convScreen');
+const convEvalScreen = document.getElementById('convEvalScreen');
 const talkBtn = document.getElementById('talkBtn');
-const statusEl = document.getElementById('status');
+const convStatus = document.getElementById('convStatus');
 const transcriptEl = document.getElementById('transcript');
-const endBtn = document.getElementById('endBtn');
-const newBtn = document.getElementById('newBtn');
 
 function addMessage(role, text) {
   const div = document.createElement('div');
@@ -226,101 +321,376 @@ function addMessage(role, text) {
   transcriptEl.scrollTop = transcriptEl.scrollHeight;
 }
 
-async function startChallenge() {
-  loadingScreen.classList.remove('hidden');
-  practiceScreen.classList.add('hidden');
-  evalScreen.classList.add('hidden');
+async function startConversation() {
+  convLoading.classList.remove('hidden');
+  convScreen.classList.add('hidden');
+  convEvalScreen.classList.add('hidden');
   transcriptEl.innerHTML = '';
 
-  const challengeRes = await fetch('/api/challenges/random');
-  const challenge = await challengeRes.json();
+  const challenge = await (await fetch('/api/challenges/random?mode=conversation')).json();
+  const sessionData = await (await fetch('/api/sessions?challenge_id=' + challenge.id + '&mode=conversation', { method: 'POST' })).json();
+  convSessionId = sessionData.session_id;
 
-  const sessionRes = await fetch('/api/sessions?challenge_id=' + challenge.id, { method: 'POST' });
-  const sessionData = await sessionRes.json();
-  sessionId = sessionData.session_id;
+  document.getElementById('convScenarioTitle').textContent = challenge.title;
+  document.getElementById('convScenarioText').textContent = challenge.scenario;
 
-  document.getElementById('scenarioTitle').textContent = challenge.title;
-  document.getElementById('scenarioText').textContent = challenge.scenario;
-
-  loadingScreen.classList.add('hidden');
-  practiceScreen.classList.remove('hidden');
-  statusEl.textContent = 'Hold the button and speak';
+  convLoading.classList.add('hidden');
+  convScreen.classList.remove('hidden');
+  convStatus.textContent = 'Hold the button and speak';
 }
 
-async function initRecorder() {
+async function initConvRecorder() {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
-  mediaRecorder.ondataavailable = e => chunks.push(e.data);
-  mediaRecorder.onstop = handleRecordingStop;
+  convRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+  convRecorder.ondataavailable = e => convChunks.push(e.data);
+  convRecorder.onstop = handleConvStop;
 }
 
-async function handleRecordingStop() {
-  const blob = new Blob(chunks, { type: 'audio/webm' });
-  chunks = [];
-  statusEl.textContent = 'Thinking...';
+async function handleConvStop() {
+  const blob = new Blob(convChunks, { type: 'audio/webm' });
+  convChunks = [];
+  convStatus.textContent = 'Thinking...';
   talkBtn.disabled = true;
 
   const formData = new FormData();
   formData.append('audio', blob, 'recording.webm');
-
-  const res = await fetch('/api/sessions/' + sessionId + '/message', {
-    method: 'POST',
-    body: formData,
-  });
-  const data = await res.json();
+  const data = await (await fetch('/api/sessions/' + convSessionId + '/message', { method: 'POST', body: formData })).json();
 
   addMessage('user', data.transcript);
   addMessage('assistant', data.ai_text);
 
-  currentAudio = new Audio(data.ai_audio_url);
-  statusEl.textContent = 'AI is speaking...';
-  currentAudio.play();
-  currentAudio.onended = () => {
-    statusEl.textContent = 'Hold the button and speak';
+  const audio = new Audio(data.ai_audio_url);
+  convStatus.textContent = 'AI is speaking...';
+  audio.play();
+  audio.onended = () => {
+    convStatus.textContent = 'Hold the button and speak';
     talkBtn.disabled = false;
   };
 }
 
 talkBtn.addEventListener('mousedown', async () => {
-  if (!mediaRecorder) await initRecorder();
-  chunks = [];
-  mediaRecorder.start();
+  if (!convRecorder) await initConvRecorder();
+  convChunks = [];
+  convRecorder.start();
   talkBtn.classList.add('recording');
-  statusEl.textContent = 'Listening...';
+  convStatus.textContent = 'Listening...';
 });
-
 talkBtn.addEventListener('mouseup', () => {
-  if (mediaRecorder && mediaRecorder.state === 'recording') {
-    mediaRecorder.stop();
+  if (convRecorder && convRecorder.state === 'recording') {
+    convRecorder.stop();
     talkBtn.classList.remove('recording');
   }
 });
 
-endBtn.addEventListener('click', async () => {
-  statusEl.textContent = 'Analyzing your conversation...';
+document.getElementById('convEndBtn').addEventListener('click', async () => {
+  convStatus.textContent = 'Analyzing your conversation...';
   talkBtn.disabled = true;
-  endBtn.disabled = true;
-
-  const res = await fetch('/api/sessions/' + sessionId + '/end', { method: 'POST' });
+  const res = await fetch('/api/sessions/' + convSessionId + '/end', { method: 'POST' });
   if (!res.ok) {
-    statusEl.textContent = 'Say something before ending the session.';
+    convStatus.textContent = 'Say something before ending the session.';
     talkBtn.disabled = false;
-    endBtn.disabled = false;
     return;
   }
   const evaluation = await res.json();
+  document.getElementById('convWeaknessLabel').textContent = evaluation.primary_weakness;
+  document.getElementById('convWeaknessExplanation').textContent = evaluation.weakness_explanation;
+  document.getElementById('convExerciseText').textContent = evaluation.exercise;
+  convScreen.classList.add('hidden');
+  convEvalScreen.classList.remove('hidden');
+});
+document.getElementById('convNewBtn').addEventListener('click', startConversation);
 
-  document.getElementById('weaknessLabel').textContent = evaluation.primary_weakness;
-  document.getElementById('weaknessExplanation').textContent = evaluation.weakness_explanation;
-  document.getElementById('exerciseText').textContent = evaluation.exercise;
+// ---------------------------------------------------------------------------
+// MONOLOGUE MODE
+// ---------------------------------------------------------------------------
+let monoChallenge = null;
+let monoSessionId = null;
+let monoDuration = null;
+let monoCameraOn = false;
+let monoRecorder = null;
+let monoChunks = [];
+let monoTimerInterval = null;
+let monoStream = null;
+let monoVideoStream = null;
+let poseLandmarker = null;
 
-  practiceScreen.classList.add('hidden');
-  evalScreen.classList.remove('hidden');
+const monoLoading = document.getElementById('monoLoading');
+const monoSetup = document.getElementById('monoSetup');
+const monoRecordingScreen = document.getElementById('monoRecording');
+const monoResult = document.getElementById('monoResult');
+const monoStartBtn = document.getElementById('monoStartBtn');
+const cameraPreview = document.getElementById('cameraPreview');
+
+async function loadMonologueTopic() {
+  monoLoading.classList.remove('hidden');
+  monoSetup.classList.add('hidden');
+  monoRecordingScreen.classList.add('hidden');
+  monoResult.classList.add('hidden');
+
+  monoChallenge = await (await fetch('/api/challenges/random?mode=monologue')).json();
+  document.getElementById('monoTopicTitle').textContent = monoChallenge.title;
+  document.getElementById('monoTopicText').textContent = monoChallenge.scenario;
+
+  monoDuration = null;
+  monoCameraOn = false;
+  document.querySelectorAll('#durationOptions .option-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#cameraOptions .option-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('#cameraOptions [data-camera="off"]').classList.add('active');
+  monoStartBtn.disabled = true;
+  monoStartBtn.textContent = 'Select a duration to start';
+
+  monoLoading.classList.add('hidden');
+  monoSetup.classList.remove('hidden');
+}
+
+document.querySelectorAll('#durationOptions .option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#durationOptions .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    monoDuration = parseInt(btn.dataset.seconds, 10);
+    monoStartBtn.disabled = false;
+    monoStartBtn.textContent = 'Start speaking';
+  });
 });
 
-newBtn.addEventListener('click', startChallenge);
+document.querySelectorAll('#cameraOptions .option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#cameraOptions .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    monoCameraOn = btn.dataset.camera === 'on';
+  });
+});
 
-startChallenge();
+async function ensurePoseLandmarker() {
+  if (poseLandmarker || !needsMediaPipe) return;
+  const filesetResolver = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+  );
+  poseLandmarker = await PoseLandmarker.createFromOptions(filesetResolver, {
+    baseOptions: {
+      modelAssetPath: "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
+      delegate: "GPU",
+    },
+    runningMode: "VIDEO",
+  });
+}
+
+function angleDeviationFromHorizontal(a, b) {
+  const dx = Math.abs(a.x - b.x);
+  const dy = Math.abs(a.y - b.y);
+  return Math.atan2(dy, dx) * (180 / Math.PI);
+}
+
+function analyzePoseFrame(landmarks, tracker) {
+  const leftShoulder = landmarks[11], rightShoulder = landmarks[12];
+  const leftEye = landmarks[2], rightEye = landmarks[5];
+  const leftWrist = landmarks[15], rightWrist = landmarks[16];
+  const leftHip = landmarks[23], rightHip = landmarks[24];
+  const nose = landmarks[0];
+
+  tracker.shoulderTilts.push(angleDeviationFromHorizontal(leftShoulder, rightShoulder));
+  tracker.headTilts.push(angleDeviationFromHorizontal(leftEye, rightEye));
+
+  const waistY = (leftHip.y + rightHip.y) / 2;
+  if (leftWrist.y > waistY && rightWrist.y > waistY) tracker.handsBelowWaistCount++;
+
+  tracker.noseX.push(nose.x);
+  tracker.noseY.push(nose.y);
+
+  const shoulderWidth = Math.abs(leftShoulder.x - rightShoulder.x);
+  tracker.shoulderWidths.push(shoulderWidth);
+
+  tracker.samples++;
+}
+
+function summarizeTracker(tracker) {
+  if (tracker.samples === 0) return null;
+  const avg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+  const stdev = arr => {
+    const m = avg(arr);
+    return Math.sqrt(avg(arr.map(v => (v - m) ** 2)));
+  };
+  const medianShoulderWidth = [...tracker.shoulderWidths].sort()[Math.floor(tracker.shoulderWidths.length / 2)];
+  const forwardLeanCount = tracker.shoulderWidths.filter(w => w > medianShoulderWidth * 1.15).length;
+
+  return {
+    avg_shoulder_tilt_deg: avg(tracker.shoulderTilts),
+    avg_head_tilt_deg: avg(tracker.headTilts),
+    hands_below_waist_ratio: tracker.handsBelowWaistCount / tracker.samples,
+    movement_variance: Math.min(1, (stdev(tracker.noseX) + stdev(tracker.noseY)) / 0.06),
+    forward_lean_ratio: forwardLeanCount / tracker.samples,
+    samples: tracker.samples,
+  };
+}
+
+document.getElementById('monoStartBtn').addEventListener('click', async () => {
+  const sessionData = await (await fetch(
+    `/api/sessions?challenge_id=${monoChallenge.id}&mode=monologue&target_duration_seconds=${monoDuration}&camera_enabled=${monoCameraOn}`,
+    { method: 'POST' }
+  )).json();
+  monoSessionId = sessionData.session_id;
+
+  monoStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  monoRecorder = new MediaRecorder(monoStream, { mimeType: 'audio/webm;codecs=opus' });
+  monoChunks = [];
+  monoRecorder.ondataavailable = e => monoChunks.push(e.data);
+
+  const tracker = { shoulderTilts: [], headTilts: [], handsBelowWaistCount: 0, noseX: [], noseY: [], shoulderWidths: [], samples: 0 };
+  const keyframes = [];
+  let poseLoopActive = false;
+
+  if (monoCameraOn) {
+    monoVideoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    cameraPreview.srcObject = monoVideoStream;
+    cameraPreview.classList.remove('hidden');
+    await ensurePoseLandmarker();
+    poseLoopActive = true;
+  } else {
+    cameraPreview.classList.add('hidden');
+  }
+
+  monoSetup.classList.add('hidden');
+  monoRecordingScreen.classList.remove('hidden');
+  monoRecorder.start();
+
+  let elapsed = 0;
+  const timerEl = document.getElementById('monoTimer');
+  const keyframeIntervalSec = Math.max(3, Math.floor(monoDuration / 6));
+
+  function runPoseLoop() {
+    if (!poseLoopActive) return;
+    if (poseLandmarker && cameraPreview.readyState >= 2) {
+      const result = poseLandmarker.detectForVideo(cameraPreview, performance.now());
+      if (result.landmarks && result.landmarks[0]) {
+        analyzePoseFrame(result.landmarks[0], tracker);
+      }
+    }
+    if (needsKeyframes && elapsed % keyframeIntervalSec === 0 && keyframes.length < 8) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 320;
+      canvas.height = 240;
+      canvas.getContext('2d').drawImage(cameraPreview, 0, 0, 320, 240);
+      keyframes.push(canvas.toDataURL('image/jpeg', 0.5));
+    }
+    if (poseLoopActive) setTimeout(runPoseLoop, 500);
+  }
+  if (poseLoopActive) runPoseLoop();
+
+  async function finishRecording() {
+    clearInterval(monoTimerInterval);
+    poseLoopActive = false;
+    monoRecorder.stop();
+    monoStream.getTracks().forEach(t => t.stop());
+    if (monoVideoStream) monoVideoStream.getTracks().forEach(t => t.stop());
+
+    await new Promise(resolve => { monoRecorder.onstop = resolve; });
+    const blob = new Blob(monoChunks, { type: 'audio/webm' });
+
+    document.getElementById('monoStatus').textContent = 'Analyzing your speech...';
+    const formData = new FormData();
+    formData.append('audio', blob, 'recording.webm');
+    const res = await fetch(`/api/monologue/${monoSessionId}/submit`, { method: 'POST', body: formData });
+
+    if (!res.ok) {
+      document.getElementById('monoStatus').textContent = 'No speech detected - try again.';
+      return;
+    }
+    const data = await res.json();
+
+    let postureResult = null;
+    if (monoCameraOn) {
+      const landmarkSummary = summarizeTracker(tracker);
+      const postureRes = await fetch(`/api/monologue/${monoSessionId}/posture`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ landmark_summary: landmarkSummary, keyframes: needsKeyframes ? keyframes : null }),
+      });
+      if (postureRes.ok) postureResult = await postureRes.json();
+    }
+
+    document.getElementById('monoWeaknessLabel').textContent = data.evaluation.primary_weakness;
+    document.getElementById('monoWeaknessExplanation').textContent = data.evaluation.weakness_explanation;
+    document.getElementById('monoExerciseText').textContent = data.evaluation.exercise;
+
+    const postureBox = document.getElementById('monoPostureBox');
+    if (postureResult && postureResult.feedback) {
+      document.getElementById('monoPostureText').textContent = postureResult.feedback;
+      postureBox.classList.remove('hidden');
+    } else {
+      postureBox.classList.add('hidden');
+    }
+
+    monoRecordingScreen.classList.add('hidden');
+    monoResult.classList.remove('hidden');
+  }
+
+  monoTimerInterval = setInterval(() => {
+    elapsed++;
+    const remaining = monoDuration - elapsed;
+    const m = Math.floor(remaining / 60), s = remaining % 60;
+    timerEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+    if (remaining <= 0) finishRecording();
+  }, 1000);
+
+  document.getElementById('monoStopBtn').onclick = finishRecording;
+});
+
+document.getElementById('monoNewBtn').addEventListener('click', loadMonologueTopic);
+
+// ---------------------------------------------------------------------------
+// PROGRESS MODE
+// ---------------------------------------------------------------------------
+let progressChart = null;
+let currentGroup = 'day';
+
+document.querySelectorAll('#groupOptions .option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#groupOptions .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentGroup = btn.dataset.group;
+    loadProgress();
+  });
+});
+
+async function loadProgress() {
+  const tipData = await (await fetch('/api/daily-tip')).json();
+  document.getElementById('dailyTip').textContent = tipData.tip;
+
+  const progress = await (await fetch('/api/progress?group=' + currentGroup)).json();
+  const labels = progress.map(p => p.bucket);
+  const overall = progress.map(p => p.avg_overall);
+  const posture = progress.map(p => p.avg_posture);
+
+  const ctx = document.getElementById('progressChart').getContext('2d');
+  if (progressChart) progressChart.destroy();
+  progressChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Overall score', data: overall, borderColor: '#d95040', backgroundColor: '#fdf0ee', tension: 0.3, fill: true },
+        { label: 'Posture score', data: posture, borderColor: '#b8860b', backgroundColor: '#fdf6e8', tension: 0.3, fill: true },
+      ],
+    },
+    options: { scales: { y: { min: 0, max: 100 } } },
+  });
+
+  const sessions = await (await fetch('/api/sessions')).json();
+  const historyList = document.getElementById('historyList');
+  historyList.innerHTML = '';
+  sessions.slice(0, 15).forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'history-row';
+    row.innerHTML = `<span class="history-title">${s.title}</span><span class="history-meta">${s.mode} &middot; ${s.primary_weakness || s.status}</span>`;
+    historyList.appendChild(row);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Init
+// ---------------------------------------------------------------------------
+startConversation();
+loadMonologueTopic();
 </script>
 </body>
 </html>

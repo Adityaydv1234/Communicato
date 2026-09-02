@@ -97,3 +97,30 @@ Be specific - reference actual phrases from the transcript."""
         temperature=0.3,
     )
     return json.loads(response.choices[0].message.content)
+
+
+def generate_daily_tip(recent_evaluations: list[dict]) -> str:
+    """recent_evaluations: list of {primary_weakness, weakness_explanation, exercise, created_at}
+    ordered most-recent-first, from the last several sessions."""
+    if not recent_evaluations:
+        return "Complete a session to get your first personalized tip."
+
+    history_text = "\n".join(
+        f"- {e['created_at']}: weakness={e['primary_weakness']} - {e['weakness_explanation']}"
+        for e in recent_evaluations
+    )
+
+    system_prompt = """You are a communication coach reviewing a student's recent practice history.
+Identify the pattern across sessions (a recurring weakness, or a weakness that is improving and what's
+emerging next) and give ONE short, specific, encouraging tip for today's practice. 2-3 sentences max.
+Do not repeat generic advice - reference what actually happened across their sessions."""
+
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": history_text},
+        ],
+        temperature=0.5,
+    )
+    return response.choices[0].message.content.strip()

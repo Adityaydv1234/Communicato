@@ -11,6 +11,23 @@ def get_conn():
     return conn
 
 
+def _migrate_existing_columns(conn):
+    """Add columns introduced after the initial schema, for DBs created before this change."""
+    challenge_cols = {row["name"] for row in conn.execute("PRAGMA table_info(challenges)")}
+    if "mode" not in challenge_cols:
+        conn.execute("ALTER TABLE challenges ADD COLUMN mode TEXT NOT NULL DEFAULT 'conversation'")
+
+    session_cols = {row["name"] for row in conn.execute("PRAGMA table_info(sessions)")}
+    if "mode" not in session_cols:
+        conn.execute("ALTER TABLE sessions ADD COLUMN mode TEXT NOT NULL DEFAULT 'conversation'")
+    if "target_duration_seconds" not in session_cols:
+        conn.execute("ALTER TABLE sessions ADD COLUMN target_duration_seconds INTEGER")
+    if "camera_enabled" not in session_cols:
+        conn.execute("ALTER TABLE sessions ADD COLUMN camera_enabled INTEGER DEFAULT 0")
+
+    conn.commit()
+
+
 def init_db():
     conn = get_conn()
     conn.executescript(
@@ -20,13 +37,17 @@ def init_db():
             title TEXT NOT NULL,
             scenario TEXT NOT NULL,
             category TEXT NOT NULL,
-            ai_persona TEXT NOT NULL,
+            mode TEXT NOT NULL DEFAULT 'conversation',
+            ai_persona TEXT,
             target_duration_seconds INTEGER DEFAULT 180
         );
 
         CREATE TABLE IF NOT EXISTS sessions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             challenge_id INTEGER NOT NULL REFERENCES challenges(id),
+            mode TEXT NOT NULL DEFAULT 'conversation',
+            target_duration_seconds INTEGER,
+            camera_enabled INTEGER DEFAULT 0,
             status TEXT DEFAULT 'active',
             started_at TEXT DEFAULT (datetime('now')),
             ended_at TEXT,
@@ -58,14 +79,31 @@ def init_db():
             created_at TEXT DEFAULT (datetime('now'))
         );
 
+        CREATE TABLE IF NOT EXISTS posture_evaluations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id INTEGER UNIQUE NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
+            analyzer TEXT NOT NULL,
+            posture_score INTEGER,
+            eye_contact_score INTEGER,
+            gesture_score INTEGER,
+            feedback TEXT NOT NULL,
+            raw_data TEXT,
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+
         CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id, created_at);
+        CREATE INDEX IF NOT EXISTS idx_sessions_started ON sessions(started_at);
         """
     )
 
-    count = conn.execute("SELECT COUNT(*) AS c FROM challenges").fetchone()["c"]
-    if count == 0:
+    _migrate_existing_columns(conn)
+
+    conversation_count = conn.execute(
+        "SELECT COUNT(*) AS c FROM challenges WHERE mode = 'conversation'"
+    ).fetchone()["c"]
+    if conversation_count == 0:
         conn.executemany(
-            "INSERT INTO challenges (title, scenario, category, ai_persona) VALUES (?, ?, ?, ?)",
+            "INSERT INTO challenges (title, scenario, category, mode, ai_persona) VALUES (?, ?, ?, 'conversation', ?)",
             [
                 (
                     "Networking at a college event",
@@ -96,6 +134,47 @@ def init_db():
                     "Tell the story with a clear beginning, middle, and end.",
                     "storytelling",
                     "a close friend who is genuinely curious and asks good follow-up questions",
+                ),
+            ],
+        )
+        conn.commit()
+
+    monologue_count = conn.execute(
+        "SELECT COUNT(*) AS c FROM challenges WHERE mode = 'monologue'"
+    ).fetchone()["c"]
+    if monologue_count == 0:
+        conn.executemany(
+            "INSERT INTO challenges (title, scenario, category, mode, ai_persona) VALUES (?, ?, ?, 'monologue', '')",
+            [
+                (
+                    "Why I chose my field of study",
+                    "Speak continuously about why you chose your current field of study or career "
+                    "path, and what excites you about it.",
+                    "self-introduction",
+                ),
+                (
+                    "A skill everyone should learn",
+                    "Speak continuously about one skill you think everyone should learn, and why "
+                    "it matters.",
+                    "persuasion",
+                ),
+                (
+                    "Describe your ideal day",
+                    "Speak continuously describing what your ideal day would look like, from "
+                    "morning to night.",
+                    "storytelling",
+                ),
+                (
+                    "A technology that will change the next decade",
+                    "Speak continuously about a technology you believe will meaningfully change "
+                    "the next ten years, and why.",
+                    "explanation",
+                ),
+                (
+                    "Convince someone to visit your hometown",
+                    "Speak continuously trying to convince someone to visit your hometown or a "
+                    "place you love.",
+                    "persuasion",
                 ),
             ],
         )
