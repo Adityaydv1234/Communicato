@@ -17,6 +17,17 @@ def _migrate_existing_columns(conn):
     if "mode" not in challenge_cols:
         conn.execute("ALTER TABLE challenges ADD COLUMN mode TEXT NOT NULL DEFAULT 'conversation'")
 
+    if "image_url" not in challenge_cols:
+        conn.execute("ALTER TABLE challenges ADD COLUMN image_url TEXT")
+    if "image_description" not in challenge_cols:
+        conn.execute("ALTER TABLE challenges ADD COLUMN image_description TEXT")
+    if "image_unsplash_id" not in challenge_cols:
+        conn.execute("ALTER TABLE challenges ADD COLUMN image_unsplash_id TEXT")
+    if "resume_id" not in challenge_cols:
+        conn.execute("ALTER TABLE challenges ADD COLUMN resume_id INTEGER REFERENCES resumes(id)")
+    if "domain" not in challenge_cols:
+        conn.execute("ALTER TABLE challenges ADD COLUMN domain TEXT")
+
     session_cols = {row["name"] for row in conn.execute("PRAGMA table_info(sessions)")}
     if "mode" not in session_cols:
         conn.execute("ALTER TABLE sessions ADD COLUMN mode TEXT NOT NULL DEFAULT 'conversation'")
@@ -24,6 +35,10 @@ def _migrate_existing_columns(conn):
         conn.execute("ALTER TABLE sessions ADD COLUMN target_duration_seconds INTEGER")
     if "camera_enabled" not in session_cols:
         conn.execute("ALTER TABLE sessions ADD COLUMN camera_enabled INTEGER DEFAULT 0")
+
+    eval_cols = {row["name"] for row in conn.execute("PRAGMA table_info(evaluations)")}
+    if "relevance_score" not in eval_cols:
+        conn.execute("ALTER TABLE evaluations ADD COLUMN relevance_score INTEGER")
 
     conn.commit()
 
@@ -91,8 +106,78 @@ def init_db():
             created_at TEXT DEFAULT (datetime('now'))
         );
 
+        CREATE TABLE IF NOT EXISTS resumes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            filename TEXT NOT NULL,
+            extracted_text TEXT NOT NULL,
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS interview_reports (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id INTEGER UNIQUE NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
+            overall_score INTEGER,
+            strengths TEXT NOT NULL,
+            weaknesses TEXT NOT NULL,
+            improved_answers TEXT NOT NULL,
+            summary TEXT NOT NULL,
+            raw_report TEXT,
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS daily_words (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            word TEXT NOT NULL,
+            meaning TEXT NOT NULL,
+            example_sentence TEXT NOT NULL,
+            word_date TEXT NOT NULL,
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS word_progress (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            word_id INTEGER UNIQUE NOT NULL REFERENCES daily_words(id) ON DELETE CASCADE,
+            review_stage INTEGER DEFAULT 0,
+            next_review_date TEXT,
+            mastered INTEGER DEFAULT 0,
+            updated_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS pronunciation_attempts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            word TEXT NOT NULL,
+            engine TEXT NOT NULL,
+            accuracy_score INTEGER,
+            fluency_score INTEGER,
+            completeness_score INTEGER,
+            overall_score INTEGER,
+            correct INTEGER,
+            feedback TEXT NOT NULL,
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS sentence_drills (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            word_id INTEGER NOT NULL REFERENCES daily_words(id) ON DELETE CASCADE,
+            transcript TEXT NOT NULL,
+            is_correct INTEGER,
+            feedback TEXT NOT NULL,
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS grammar_drills (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            mistake_pattern TEXT NOT NULL,
+            original_example TEXT NOT NULL,
+            corrected_example TEXT NOT NULL,
+            exercise_prompt TEXT NOT NULL,
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+
         CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id, created_at);
         CREATE INDEX IF NOT EXISTS idx_sessions_started ON sessions(started_at);
+        CREATE INDEX IF NOT EXISTS idx_daily_words_date ON daily_words(word_date);
+        CREATE INDEX IF NOT EXISTS idx_word_progress_next_review ON word_progress(next_review_date);
         """
     )
 

@@ -136,10 +136,104 @@
     width: 100%; max-width: 320px; border-radius: 10px; background: var(--surface-sunken);
     display: block; margin: 0 auto 16px; transform: scaleX(-1);
   }
-  #monoTimer {
+  #monoTimer, #imgTimer {
     font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums;
     text-align: center; margin-bottom: 8px; color: var(--accent);
   }
+
+  /* Describe (image) - specific */
+  #describeImage {
+    width: 100%; max-height: 320px; object-fit: cover; border-radius: 10px;
+    background: var(--surface-sunken); display: block; margin: 0 auto 16px;
+  }
+  #imgCameraPreview {
+    width: 140px; border-radius: 8px; background: var(--surface-sunken);
+    display: block; margin: 0 auto 16px; transform: scaleX(-1);
+  }
+  .relevance-box {
+    background: var(--surface-sunken); border-left: 3px solid var(--ink-tertiary); padding: 12px 16px;
+    border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.5; margin-top: 12px;
+  }
+  .relevance-box strong { color: var(--ink); }
+
+  /* English section */
+  .subnav {
+    display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .subnav-btn {
+    padding: 6px 12px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--surface-raised); color: var(--ink-secondary); font-size: 12px;
+    font-weight: 650; cursor: pointer;
+  }
+  .subnav-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+  .word-card {
+    border-bottom: 1px solid var(--border); padding: 12px 0;
+  }
+  .word-card:last-child { border-bottom: none; }
+  .word-title { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+  .word-meaning { font-size: 13px; color: var(--ink-secondary); margin-bottom: 4px; }
+  .word-example { font-size: 13px; color: var(--ink-tertiary); font-style: italic; }
+  .word-badge {
+    display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle;
+  }
+  .word-badge.mastered { background: var(--teal-soft); color: var(--teal); }
+  .word-badge.due { background: var(--accent-soft); color: var(--accent); }
+  .review-word {
+    font-size: 26px; font-weight: 700; text-align: center; margin: 12px 0;
+  }
+  .reveal-box {
+    text-align: center; padding: 16px; background: var(--surface-sunken); border-radius: 8px;
+    margin-bottom: 16px; font-size: 14px;
+  }
+  .btn-row { display: flex; gap: 8px; justify-content: center; }
+  .btn-correct {
+    background: var(--teal); color: white; border: none; padding: 10px 18px;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .btn-incorrect {
+    background: var(--accent); color: white; border: none; padding: 10px 18px;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  #recordWordBtn {
+    width: 96px; height: 96px; border-radius: 50%; border: none;
+    background: var(--teal); color: white; font-size: 13px; font-weight: 650;
+    cursor: pointer; transition: transform 0.1s, background 0.15s; user-select: none;
+    display: block; margin: 0 auto;
+  }
+  #recordWordBtn.recording { transform: scale(0.94); background: #b83e30; background: var(--accent); }
+  .score-row { display: flex; justify-content: space-between; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+  .score-tile {
+    flex: 1; min-width: 70px; text-align: center; background: var(--surface-sunken);
+    border-radius: 8px; padding: 10px 6px;
+  }
+  .score-tile .num { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .score-tile .label { font-size: 10px; color: var(--ink-tertiary); text-transform: uppercase; letter-spacing: 0.03em; }
+  .grammar-card { border-bottom: 1px solid var(--border); padding: 14px 0; }
+  .grammar-card:last-child { border-bottom: none; }
+  .grammar-pattern { font-weight: 700; font-size: 14px; margin-bottom: 6px; color: var(--accent); }
+  .grammar-example { font-size: 13px; margin-bottom: 3px; }
+  .grammar-example.wrong { color: var(--ink-tertiary); text-decoration: line-through; }
+  .grammar-example.right { color: var(--teal); }
+  .grammar-exercise { font-size: 13px; color: var(--ink-secondary); margin-top: 6px; }
+
+  /* Interview section */
+  #resumeFile {
+    width: 100%; padding: 10px; border: 1px dashed var(--border); border-radius: 8px;
+    font-size: 13px; background: var(--surface); cursor: pointer;
+  }
+  #domainInput {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; background: var(--surface-raised); color: var(--ink); font-family: inherit;
+  }
+  #avatarCanvas { background: var(--surface-sunken); border-radius: 50%; }
+  #interviewCameraPreview {
+    width: 110px; border-radius: 8px; background: var(--surface-sunken);
+    display: block; margin: 8px auto 0; transform: scaleX(-1);
+  }
+  .report-score { font-size: 40px; font-weight: 700; text-align: center; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .simple-list { padding-left: 20px; margin: 0; }
+  .simple-list li { font-size: 14px; color: var(--ink-secondary); margin-bottom: 6px; }
 
   /* Progress */
   .tip-card {
@@ -164,6 +258,9 @@
   <div class="nav-tabs">
     <button class="nav-tab active" data-tab="conversation">Conversation</button>
     <button class="nav-tab" data-tab="monologue">Monologue</button>
+    <button class="nav-tab" data-tab="describe">Describe</button>
+    <button class="nav-tab" data-tab="english">English</button>
+    <button class="nav-tab" data-tab="interview">Interview</button>
     <button class="nav-tab" data-tab="progress">Progress</button>
   </div>
 
@@ -247,6 +344,215 @@
     </div>
   </div>
 
+  <!-- DESCRIBE (IMAGE) TAB -->
+  <div id="describeTab" class="hidden">
+    <div id="imgLoading" class="card">Loading an image...</div>
+
+    <div id="imgSetup" class="hidden">
+      <div class="card">
+        <img id="describeImage" src="" alt="Describe this image">
+        <div class="scenario-text">Speak continuously describing everything you notice - objects, people, setting, mood, and any story you imagine behind it.</div>
+      </div>
+      <div class="card">
+        <div class="option-label">Duration</div>
+        <div class="option-row" id="imgDurationOptions">
+          <button class="option-btn" data-seconds="60">1 min</button>
+          <button class="option-btn" data-seconds="120">2 min</button>
+          <button class="option-btn" data-seconds="180">3 min</button>
+          <button class="option-btn" data-seconds="240">4 min</button>
+          <button class="option-btn" data-seconds="300">5 min</button>
+        </div>
+        <div class="option-label">Camera (posture &amp; gesture feedback)</div>
+        <div class="option-row" id="imgCameraOptions">
+          <button class="option-btn" data-camera="off">Camera off</button>
+          <button class="option-btn" data-camera="on">Camera on</button>
+        </div>
+        <div style="text-align:center;">
+          <button id="imgStartBtn" class="btn-primary" disabled>Select a duration to start</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="imgRecording" class="hidden">
+      <div class="card">
+        <img id="describeImageRecording" src="" alt="Describe this image" style="width:100%; max-height:240px; object-fit:cover; border-radius:10px; margin-bottom:16px;">
+        <video id="imgCameraPreview" class="hidden" autoplay playsinline muted></video>
+        <div id="imgTimer">0:00</div>
+        <div class="status-text" id="imgStatus" style="text-align:center;">Recording... speak now</div>
+        <div style="text-align:center; margin-top:12px;">
+          <button id="imgStopBtn" class="btn-outline">Stop early</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="imgResult" class="hidden">
+      <div class="card">
+        <div class="weakness-label" id="imgWeaknessLabel"></div>
+        <div class="eval-explanation" id="imgWeaknessExplanation"></div>
+        <div class="exercise-box"><strong>Try this next time:</strong> <span id="imgExerciseText"></span></div>
+        <div class="relevance-box" id="imgRelevanceBox">
+          <strong>Accuracy:</strong> <span id="imgRelevanceText"></span>
+        </div>
+        <div id="imgPostureBox" class="posture-box hidden">
+          <strong>Posture &amp; gestures:</strong> <span id="imgPostureText"></span>
+        </div>
+      </div>
+      <div style="text-align:center;"><button id="imgNewBtn" class="btn-primary">Practice again</button></div>
+    </div>
+  </div>
+
+  <!-- ENGLISH TAB -->
+  <div id="englishTab" class="hidden">
+    <div class="subnav">
+      <button class="subnav-btn active" data-subtab="words">Daily Words</button>
+      <button class="subnav-btn" data-subtab="pronunciation">Pronunciation</button>
+      <button class="subnav-btn" data-subtab="sentence">Sentence Drill</button>
+      <button class="subnav-btn" data-subtab="grammar">Grammar</button>
+      <button class="subnav-btn" data-subtab="fillers">Filler Words</button>
+    </div>
+
+    <!-- Words sub-tab -->
+    <div id="englishWords" class="eng-panel">
+      <div class="card hidden" id="reviewCard"></div>
+      <div class="card">
+        <div class="option-label">Today's words</div>
+        <div id="wordsList">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Pronunciation sub-tab -->
+    <div id="englishPronunciation" class="eng-panel hidden">
+      <div class="card">
+        <div class="review-word" id="pronWord">Loading...</div>
+        <div class="status-text" id="pronMeaning" style="text-align:center; margin-bottom:16px;"></div>
+        <button id="recordWordBtn">Hold to say it</button>
+        <div class="status-text" id="pronStatus" style="text-align:center; margin-top:10px;"></div>
+        <div id="pronResult" class="hidden">
+          <div class="score-row" id="pronScores"></div>
+          <div class="eval-explanation" id="pronFeedback"></div>
+        </div>
+        <div style="text-align:center; margin-top:12px;">
+          <button id="pronNextBtn" class="btn-outline">Next word</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sentence drill sub-tab -->
+    <div id="englishSentence" class="eng-panel hidden">
+      <div class="card">
+        <div class="review-word" id="sentWord">Loading...</div>
+        <div class="status-text" id="sentMeaning" style="text-align:center; margin-bottom:16px;"></div>
+        <button id="recordSentBtn">Hold to speak a sentence</button>
+        <div class="status-text" id="sentStatus" style="text-align:center; margin-top:10px;"></div>
+        <div id="sentResult" class="hidden">
+          <div class="msg user" id="sentTranscript" style="margin: 12px auto; max-width: 100%;"></div>
+          <div class="eval-explanation" id="sentFeedback"></div>
+        </div>
+        <div style="text-align:center; margin-top:12px;">
+          <button id="sentNextBtn" class="btn-outline">Next word</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grammar sub-tab -->
+    <div id="englishGrammar" class="eng-panel hidden">
+      <div class="card">
+        <div class="option-label">Mined from your own sessions</div>
+        <div id="grammarList">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Filler words sub-tab -->
+    <div id="englishFillers" class="eng-panel hidden">
+      <div class="card">
+        <div class="option-row" id="fillerGroupOptions">
+          <button class="option-btn active" data-group="day">By day</button>
+          <button class="option-btn" data-group="week">By week</button>
+          <button class="option-btn" data-group="month">By month</button>
+        </div>
+        <canvas id="fillerChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERVIEW TAB -->
+  <div id="interviewTab" class="hidden">
+    <div id="interviewSetup">
+      <div class="card">
+        <div class="option-label">Resume</div>
+        <input type="file" id="resumeFile" accept=".pdf,.docx">
+        <div class="status-text" id="resumeStatus" style="margin-top:8px;"></div>
+      </div>
+      <div class="card">
+        <div class="option-label">Domain / role</div>
+        <input type="text" id="domainInput" placeholder="e.g. Software Engineering, Data Science, Marketing" list="domainSuggestions">
+        <datalist id="domainSuggestions">
+          <option value="Software Engineering">
+          <option value="Data Science">
+          <option value="Product Management">
+          <option value="Marketing">
+          <option value="Sales">
+          <option value="Finance">
+          <option value="Consulting">
+        </datalist>
+      </div>
+      <div class="card">
+        <div class="option-label">Duration</div>
+        <div class="option-row" id="interviewDurationOptions">
+          <button class="option-btn" data-seconds="300">5 min</button>
+          <button class="option-btn" data-seconds="600">10 min</button>
+          <button class="option-btn" data-seconds="900">15 min</button>
+          <button class="option-btn" data-seconds="1800">30 min</button>
+        </div>
+        <div class="option-label">Camera (posture feedback)</div>
+        <div class="option-row" id="interviewCameraOptions">
+          <button class="option-btn" data-camera="off">Camera off</button>
+          <button class="option-btn" data-camera="on">Camera on</button>
+        </div>
+        <div style="text-align:center;">
+          <button id="interviewStartBtn" class="btn-primary" disabled>Upload a resume, enter a role, and pick a duration</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="interviewRunning" class="hidden">
+      <div class="card">
+        <canvas id="avatarCanvas" width="180" height="180" style="display:block; margin: 0 auto;"></canvas>
+        <video id="interviewCameraPreview" class="hidden" autoplay playsinline muted></video>
+        <div id="interviewTimer" style="text-align:center; font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--ink-secondary); margin: 10px 0 4px;"></div>
+        <div class="status-text" id="interviewStatus" style="text-align:center;"></div>
+        <div id="interviewSubtitle" style="text-align:center; font-size:13px; color:var(--ink-secondary); margin-top:8px; min-height:36px;"></div>
+        <div style="text-align:center; margin-top:12px;">
+          <button id="interviewEndBtn" class="btn-outline">End interview</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="interviewReport" class="hidden">
+      <div class="card">
+        <div class="option-label" style="text-align:center;">Overall score</div>
+        <div class="report-score" id="reportScore"></div>
+      </div>
+      <div class="card">
+        <div class="option-label">Strengths</div>
+        <ul class="simple-list" id="reportStrengths"></ul>
+      </div>
+      <div class="card">
+        <div class="option-label">Weaknesses</div>
+        <ul class="simple-list" id="reportWeaknesses"></ul>
+      </div>
+      <div class="card">
+        <div class="option-label">Stronger answers</div>
+        <div id="reportAnswers"></div>
+      </div>
+      <div class="card">
+        <div class="option-label">Summary</div>
+        <div class="eval-explanation" id="reportSummary"></div>
+      </div>
+      <div style="text-align:center;"><button id="interviewNewBtn" class="btn-primary">New interview</button></div>
+    </div>
+  </div>
+
   <!-- PROGRESS TAB -->
   <div id="progressTab" class="hidden">
     <div class="card">
@@ -287,6 +593,9 @@ const tabs = document.querySelectorAll('.nav-tab');
 const panels = {
   conversation: document.getElementById('conversationTab'),
   monologue: document.getElementById('monologueTab'),
+  describe: document.getElementById('describeTab'),
+  english: document.getElementById('englishTab'),
+  interview: document.getElementById('interviewTab'),
   progress: document.getElementById('progressTab'),
 };
 tabs.forEach(tab => {
@@ -296,6 +605,7 @@ tabs.forEach(tab => {
     Object.values(panels).forEach(p => p.classList.add('hidden'));
     panels[tab.dataset.tab].classList.remove('hidden');
     if (tab.dataset.tab === 'progress') loadProgress();
+    if (tab.dataset.tab === 'english') loadEnglishWords();
   });
 });
 
@@ -638,6 +948,898 @@ document.getElementById('monoStartBtn').addEventListener('click', async () => {
 document.getElementById('monoNewBtn').addEventListener('click', loadMonologueTopic);
 
 // ---------------------------------------------------------------------------
+// DESCRIBE (IMAGE) MODE
+// ---------------------------------------------------------------------------
+let imgChallenge = null;
+let imgSessionId = null;
+let imgDuration = null;
+let imgCameraOn = false;
+let imgRecorder = null;
+let imgChunks = [];
+let imgTimerInterval = null;
+let imgStream = null;
+let imgVideoStream = null;
+
+const imgLoading = document.getElementById('imgLoading');
+const imgSetup = document.getElementById('imgSetup');
+const imgRecordingScreen = document.getElementById('imgRecording');
+const imgResult = document.getElementById('imgResult');
+const imgStartBtn = document.getElementById('imgStartBtn');
+const imgCameraPreview = document.getElementById('imgCameraPreview');
+
+async function loadDescribeImage() {
+  imgLoading.classList.remove('hidden');
+  imgSetup.classList.add('hidden');
+  imgRecordingScreen.classList.add('hidden');
+  imgResult.classList.add('hidden');
+
+  imgChallenge = await (await fetch('/api/images/random')).json();
+  if (imgChallenge.detail) {
+    imgLoading.textContent = imgChallenge.detail;
+    return;
+  }
+  document.getElementById('describeImage').src = imgChallenge.image_url;
+  document.getElementById('describeImageRecording').src = imgChallenge.image_url;
+
+  imgDuration = null;
+  imgCameraOn = false;
+  document.querySelectorAll('#imgDurationOptions .option-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#imgCameraOptions .option-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('#imgCameraOptions [data-camera="off"]').classList.add('active');
+  imgStartBtn.disabled = true;
+  imgStartBtn.textContent = 'Select a duration to start';
+
+  imgLoading.classList.add('hidden');
+  imgSetup.classList.remove('hidden');
+}
+
+document.querySelectorAll('#imgDurationOptions .option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#imgDurationOptions .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    imgDuration = parseInt(btn.dataset.seconds, 10);
+    imgStartBtn.disabled = false;
+    imgStartBtn.textContent = 'Start speaking';
+  });
+});
+
+document.querySelectorAll('#imgCameraOptions .option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#imgCameraOptions .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    imgCameraOn = btn.dataset.camera === 'on';
+  });
+});
+
+imgStartBtn.addEventListener('click', async () => {
+  const sessionData = await (await fetch(
+    `/api/sessions?challenge_id=${imgChallenge.id}&mode=image_description&target_duration_seconds=${imgDuration}&camera_enabled=${imgCameraOn}`,
+    { method: 'POST' }
+  )).json();
+  imgSessionId = sessionData.session_id;
+
+  imgStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  imgRecorder = new MediaRecorder(imgStream, { mimeType: 'audio/webm;codecs=opus' });
+  imgChunks = [];
+  imgRecorder.ondataavailable = e => imgChunks.push(e.data);
+
+  const tracker = { shoulderTilts: [], headTilts: [], handsBelowWaistCount: 0, noseX: [], noseY: [], shoulderWidths: [], samples: 0 };
+  const keyframes = [];
+  let poseLoopActive = false;
+
+  if (imgCameraOn) {
+    imgVideoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    imgCameraPreview.srcObject = imgVideoStream;
+    imgCameraPreview.classList.remove('hidden');
+    await ensurePoseLandmarker();
+    poseLoopActive = true;
+  } else {
+    imgCameraPreview.classList.add('hidden');
+  }
+
+  imgSetup.classList.add('hidden');
+  imgRecordingScreen.classList.remove('hidden');
+  imgRecorder.start();
+
+  let elapsed = 0;
+  const timerEl = document.getElementById('imgTimer');
+  const keyframeIntervalSec = Math.max(3, Math.floor(imgDuration / 6));
+
+  function runPoseLoop() {
+    if (!poseLoopActive) return;
+    if (poseLandmarker && imgCameraPreview.readyState >= 2) {
+      const result = poseLandmarker.detectForVideo(imgCameraPreview, performance.now());
+      if (result.landmarks && result.landmarks[0]) {
+        analyzePoseFrame(result.landmarks[0], tracker);
+      }
+    }
+    if (needsKeyframes && elapsed % keyframeIntervalSec === 0 && keyframes.length < 8) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 320;
+      canvas.height = 240;
+      canvas.getContext('2d').drawImage(imgCameraPreview, 0, 0, 320, 240);
+      keyframes.push(canvas.toDataURL('image/jpeg', 0.5));
+    }
+    if (poseLoopActive) setTimeout(runPoseLoop, 500);
+  }
+  if (poseLoopActive) runPoseLoop();
+
+  async function finishRecording() {
+    clearInterval(imgTimerInterval);
+    poseLoopActive = false;
+    imgRecorder.stop();
+    imgStream.getTracks().forEach(t => t.stop());
+    if (imgVideoStream) imgVideoStream.getTracks().forEach(t => t.stop());
+
+    await new Promise(resolve => { imgRecorder.onstop = resolve; });
+    const blob = new Blob(imgChunks, { type: 'audio/webm' });
+
+    document.getElementById('imgStatus').textContent = 'Analyzing your description...';
+    const formData = new FormData();
+    formData.append('audio', blob, 'recording.webm');
+    const res = await fetch(`/api/monologue/${imgSessionId}/submit`, { method: 'POST', body: formData });
+
+    if (!res.ok) {
+      document.getElementById('imgStatus').textContent = 'No speech detected - try again.';
+      return;
+    }
+    const data = await res.json();
+
+    let postureResult = null;
+    if (imgCameraOn) {
+      const landmarkSummary = summarizeTracker(tracker);
+      const postureRes = await fetch(`/api/monologue/${imgSessionId}/posture`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ landmark_summary: landmarkSummary, keyframes: needsKeyframes ? keyframes : null }),
+      });
+      if (postureRes.ok) postureResult = await postureRes.json();
+    }
+
+    document.getElementById('imgWeaknessLabel').textContent = data.evaluation.primary_weakness;
+    document.getElementById('imgWeaknessExplanation').textContent = data.evaluation.weakness_explanation;
+    document.getElementById('imgExerciseText').textContent = data.evaluation.exercise;
+    document.getElementById('imgRelevanceText').textContent =
+      `${data.evaluation.relevance_score}/100 - how accurately you described what's actually in the image.`;
+
+    const postureBox = document.getElementById('imgPostureBox');
+    if (postureResult && postureResult.feedback) {
+      document.getElementById('imgPostureText').textContent = postureResult.feedback;
+      postureBox.classList.remove('hidden');
+    } else {
+      postureBox.classList.add('hidden');
+    }
+
+    imgRecordingScreen.classList.add('hidden');
+    imgResult.classList.remove('hidden');
+  }
+
+  imgTimerInterval = setInterval(() => {
+    elapsed++;
+    const remaining = imgDuration - elapsed;
+    const m = Math.floor(remaining / 60), s = remaining % 60;
+    timerEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+    if (remaining <= 0) finishRecording();
+  }, 1000);
+
+  document.getElementById('imgStopBtn').onclick = finishRecording;
+});
+
+document.getElementById('imgNewBtn').addEventListener('click', loadDescribeImage);
+
+// ---------------------------------------------------------------------------
+// WAV RECORDER (for pronunciation practice, which needs raw 16kHz PCM WAV
+// instead of webm - Azure's Speech SDK reads WAV files directly)
+// ---------------------------------------------------------------------------
+class WavRecorder {
+  async start() {
+    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    this.input = this.audioContext.createMediaStreamSource(this.stream);
+    this.processor = this.audioContext.createScriptProcessor(4096, 1, 1);
+    this.samples = [];
+    this.processor.onaudioprocess = (e) => {
+      this.samples.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+    };
+    this.input.connect(this.processor);
+    this.processor.connect(this.audioContext.destination);
+  }
+
+  stop() {
+    this.processor.disconnect();
+    this.input.disconnect();
+    this.stream.getTracks().forEach(t => t.stop());
+    const sourceRate = this.audioContext.sampleRate;
+    const merged = this._merge(this.samples);
+    const resampled = this._resample(merged, sourceRate, 16000);
+    const blob = this._encodeWav(resampled, 16000);
+    this.audioContext.close();
+    return blob;
+  }
+
+  _merge(chunks) {
+    const length = chunks.reduce((sum, c) => sum + c.length, 0);
+    const result = new Float32Array(length);
+    let offset = 0;
+    for (const c of chunks) { result.set(c, offset); offset += c.length; }
+    return result;
+  }
+
+  _resample(samples, sourceRate, targetRate) {
+    if (sourceRate === targetRate) return samples;
+    const ratio = sourceRate / targetRate;
+    const newLength = Math.round(samples.length / ratio);
+    const result = new Float32Array(newLength);
+    for (let i = 0; i < newLength; i++) result[i] = samples[Math.floor(i * ratio)] || 0;
+    return result;
+  }
+
+  _encodeWav(samples, sampleRate) {
+    const buffer = new ArrayBuffer(44 + samples.length * 2);
+    const view = new DataView(buffer);
+    const writeString = (offset, str) => {
+      for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+    };
+    writeString(0, 'RIFF');
+    view.setUint32(4, 36 + samples.length * 2, true);
+    writeString(8, 'WAVE');
+    writeString(12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    writeString(36, 'data');
+    view.setUint32(40, samples.length * 2, true);
+    let offset = 44;
+    for (let i = 0; i < samples.length; i++, offset += 2) {
+      const s = Math.max(-1, Math.min(1, samples[i]));
+      view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+    }
+    return new Blob([view], { type: 'audio/wav' });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ENGLISH SECTION
+// ---------------------------------------------------------------------------
+document.querySelectorAll('.subnav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.subnav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.eng-panel').forEach(p => p.classList.add('hidden'));
+    document.getElementById('english' + btn.dataset.subtab[0].toUpperCase() + btn.dataset.subtab.slice(1)).classList.remove('hidden');
+    if (btn.dataset.subtab === 'pronunciation') loadPronunciationWord();
+    if (btn.dataset.subtab === 'sentence') loadSentenceDrillWord();
+    if (btn.dataset.subtab === 'grammar') loadGrammarDrills();
+    if (btn.dataset.subtab === 'fillers') loadFillerChart();
+  });
+});
+
+// -- Daily words + spaced repetition review --
+let currentReviews = [];
+let currentReviewIndex = 0;
+
+async function loadEnglishWords() {
+  const wordsList = document.getElementById('wordsList');
+  wordsList.textContent = 'Loading...';
+
+  const words = await (await fetch('/api/english/daily-words')).json();
+  wordsList.innerHTML = '';
+  words.forEach(w => {
+    const div = document.createElement('div');
+    div.className = 'word-card';
+    const badge = w.mastered ? '<span class="word-badge mastered">Mastered</span>' : '';
+    div.innerHTML = `<div class="word-title">${w.word}${badge}</div>
+      <div class="word-meaning">${w.meaning}</div>
+      <div class="word-example">"${w.example_sentence}"</div>`;
+    wordsList.appendChild(div);
+  });
+
+  currentReviews = await (await fetch('/api/english/reviews/due')).json();
+  currentReviewIndex = 0;
+  renderNextReview();
+}
+
+function renderNextReview() {
+  const reviewCard = document.getElementById('reviewCard');
+  if (currentReviewIndex >= currentReviews.length) {
+    reviewCard.classList.add('hidden');
+    return;
+  }
+  const review = currentReviews[currentReviewIndex];
+  reviewCard.classList.remove('hidden');
+  reviewCard.innerHTML = `
+    <div class="option-label">Review due (${currentReviewIndex + 1} of ${currentReviews.length})</div>
+    <div class="review-word">${review.word}</div>
+    <div class="reveal-box" id="revealBox">Do you remember what this means? Think, then reveal.</div>
+    <div class="btn-row" id="reviewButtons">
+      <button class="btn-primary" id="revealBtn">Reveal meaning</button>
+    </div>`;
+
+  document.getElementById('revealBtn').addEventListener('click', () => {
+    document.getElementById('revealBox').innerHTML =
+      `<strong>${review.meaning}</strong><br><span style="color:var(--ink-tertiary);">"${review.example_sentence}"</span>`;
+    document.getElementById('reviewButtons').innerHTML = `
+      <button class="btn-incorrect" id="wrongBtn">I got it wrong</button>
+      <button class="btn-correct" id="rightBtn">I remembered it</button>`;
+    document.getElementById('wrongBtn').addEventListener('click', () => submitReviewAnswer(review.word_id, false));
+    document.getElementById('rightBtn').addEventListener('click', () => submitReviewAnswer(review.word_id, true));
+  });
+}
+
+async function submitReviewAnswer(wordId, isCorrect) {
+  await fetch(`/api/english/reviews/${wordId}/answer?is_correct=${isCorrect}`, { method: 'POST' });
+  currentReviewIndex++;
+  renderNextReview();
+}
+
+// -- Pronunciation practice --
+let pronRecorder = null;
+let pronCurrentWord = null;
+const recordWordBtn = document.getElementById('recordWordBtn');
+
+async function loadPronunciationWord() {
+  document.getElementById('pronResult').classList.add('hidden');
+  document.getElementById('pronStatus').textContent = '';
+  pronCurrentWord = await (await fetch('/api/english/pronunciation/word')).json();
+  if (pronCurrentWord.detail) {
+    document.getElementById('pronWord').textContent = pronCurrentWord.detail;
+    document.getElementById('pronMeaning').textContent = '';
+    return;
+  }
+  document.getElementById('pronWord').textContent = pronCurrentWord.word;
+  document.getElementById('pronMeaning').textContent = pronCurrentWord.meaning;
+}
+
+recordWordBtn.addEventListener('mousedown', async () => {
+  pronRecorder = new WavRecorder();
+  await pronRecorder.start();
+  recordWordBtn.classList.add('recording');
+  recordWordBtn.textContent = 'Listening...';
+});
+
+recordWordBtn.addEventListener('mouseup', async () => {
+  if (!pronRecorder) return;
+  recordWordBtn.classList.remove('recording');
+  recordWordBtn.textContent = 'Hold to say it';
+  const blob = pronRecorder.stop();
+  pronRecorder = null;
+
+  document.getElementById('pronStatus').textContent = 'Analyzing pronunciation...';
+  const formData = new FormData();
+  formData.append('audio', blob, 'attempt.wav');
+  const res = await fetch(`/api/english/pronunciation/attempt?word=${encodeURIComponent(pronCurrentWord.word)}`, {
+    method: 'POST', body: formData,
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    document.getElementById('pronStatus').textContent = data.detail || 'Something went wrong.';
+    return;
+  }
+  document.getElementById('pronStatus').textContent = '';
+
+  const scores = document.getElementById('pronScores');
+  scores.innerHTML = '';
+  const tiles = [
+    ['Accuracy', data.accuracy_score], ['Fluency', data.fluency_score],
+    ['Completeness', data.completeness_score], ['Overall', data.overall_score],
+  ];
+  tiles.forEach(([label, val]) => {
+    if (val === null || val === undefined) return;
+    const tile = document.createElement('div');
+    tile.className = 'score-tile';
+    tile.innerHTML = `<div class="num">${val}</div><div class="label">${label}</div>`;
+    scores.appendChild(tile);
+  });
+  document.getElementById('pronFeedback').textContent = data.feedback;
+  document.getElementById('pronResult').classList.remove('hidden');
+});
+
+document.getElementById('pronNextBtn').addEventListener('click', loadPronunciationWord);
+
+// -- Sentence drill --
+let sentRecorder = null;
+let sentChunks = [];
+let sentCurrentWord = null;
+const recordSentBtn = document.getElementById('recordSentBtn');
+
+async function loadSentenceDrillWord() {
+  document.getElementById('sentResult').classList.add('hidden');
+  document.getElementById('sentStatus').textContent = '';
+  sentCurrentWord = await (await fetch('/api/english/sentence-drill/word')).json();
+  if (sentCurrentWord.detail) {
+    document.getElementById('sentWord').textContent = sentCurrentWord.detail;
+    document.getElementById('sentMeaning').textContent = '';
+    return;
+  }
+  document.getElementById('sentWord').textContent = sentCurrentWord.word;
+  document.getElementById('sentMeaning').textContent = sentCurrentWord.meaning;
+}
+
+async function initSentRecorder() {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  sentRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+  sentRecorder.ondataavailable = e => sentChunks.push(e.data);
+}
+
+recordSentBtn.addEventListener('mousedown', async () => {
+  if (!sentRecorder) await initSentRecorder();
+  sentChunks = [];
+  sentRecorder.start();
+  recordSentBtn.classList.add('recording');
+});
+
+recordSentBtn.addEventListener('mouseup', () => {
+  if (!sentRecorder || sentRecorder.state !== 'recording') return;
+  recordSentBtn.classList.remove('recording');
+  sentRecorder.onstop = async () => {
+    const blob = new Blob(sentChunks, { type: 'audio/webm' });
+    document.getElementById('sentStatus').textContent = 'Checking your sentence...';
+
+    const formData = new FormData();
+    formData.append('audio', blob, 'recording.webm');
+    const res = await fetch(`/api/english/sentence-drill/attempt?word_id=${sentCurrentWord.id}`, {
+      method: 'POST', body: formData,
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      document.getElementById('sentStatus').textContent = data.detail || 'No speech detected - try again.';
+      return;
+    }
+    document.getElementById('sentStatus').textContent = '';
+    document.getElementById('sentTranscript').textContent = data.transcript;
+    document.getElementById('sentFeedback').textContent =
+      (data.correct ? 'Correct usage! ' : 'Not quite. ') + data.feedback;
+    document.getElementById('sentResult').classList.remove('hidden');
+  };
+  sentRecorder.stop();
+});
+
+document.getElementById('sentNextBtn').addEventListener('click', loadSentenceDrillWord);
+
+// -- Grammar drills --
+async function loadGrammarDrills() {
+  const grammarList = document.getElementById('grammarList');
+  grammarList.textContent = 'Analyzing your past sessions...';
+  const drills = await (await fetch('/api/english/grammar-drills')).json();
+
+  if (drills.length === 0) {
+    grammarList.textContent = 'No recurring grammar patterns found yet - keep practicing and check back.';
+    return;
+  }
+  grammarList.innerHTML = '';
+  drills.forEach(d => {
+    const div = document.createElement('div');
+    div.className = 'grammar-card';
+    div.innerHTML = `
+      <div class="grammar-pattern">${d.mistake_pattern}</div>
+      <div class="grammar-example wrong">${d.original_example}</div>
+      <div class="grammar-example right">${d.corrected_example}</div>
+      <div class="grammar-exercise">${d.exercise_prompt}</div>`;
+    grammarList.appendChild(div);
+  });
+}
+
+// -- Filler word trend --
+let fillerChart = null;
+let currentFillerGroup = 'day';
+
+document.querySelectorAll('#fillerGroupOptions .option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#fillerGroupOptions .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFillerGroup = btn.dataset.group;
+    loadFillerChart();
+  });
+});
+
+async function loadFillerChart() {
+  const trend = await (await fetch('/api/english/filler-words/trend?group=' + currentFillerGroup)).json();
+  const labels = trend.map(t => t.bucket);
+  const rates = trend.map(t => t.filler_rate_per_100_words);
+
+  const ctx = document.getElementById('fillerChart').getContext('2d');
+  if (fillerChart) fillerChart.destroy();
+  fillerChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{ label: 'Filler words per 100 words', data: rates, borderColor: '#d95040', backgroundColor: '#fdf0ee', tension: 0.3, fill: true }],
+    },
+    options: { scales: { y: { min: 0 } } },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// AUTO-LISTENER (interview mode): records continuously and auto-stops after
+// ~1.8s of silence, instead of push-to-talk.
+// ---------------------------------------------------------------------------
+class AutoListener {
+  constructor(silenceThreshold = 0.015, silenceDurationMs = 1800) {
+    this.silenceThreshold = silenceThreshold;
+    this.silenceDurationMs = silenceDurationMs;
+  }
+
+  async start(onSilenceDetected) {
+    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    this.recorder = new MediaRecorder(this.stream, { mimeType: 'audio/webm;codecs=opus' });
+    this.chunks = [];
+    this.recorder.ondataavailable = e => this.chunks.push(e.data);
+    this.recorder.start();
+
+    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    this.analyser = this.audioContext.createAnalyser();
+    this.analyser.fftSize = 2048;
+    const source = this.audioContext.createMediaStreamSource(this.stream);
+    source.connect(this.analyser);
+    this.dataArray = new Uint8Array(this.analyser.fftSize);
+
+    this.silenceStart = null;
+    this.speechDetected = false;
+    this.monitoring = true;
+    this._monitor(onSilenceDetected);
+  }
+
+  _monitor(onSilenceDetected) {
+    if (!this.monitoring) return;
+    this.analyser.getByteTimeDomainData(this.dataArray);
+    let sum = 0;
+    for (let i = 0; i < this.dataArray.length; i++) {
+      const v = (this.dataArray[i] - 128) / 128;
+      sum += v * v;
+    }
+    const rms = Math.sqrt(sum / this.dataArray.length);
+
+    if (rms > this.silenceThreshold) {
+      this.speechDetected = true;
+      this.silenceStart = null;
+    } else if (this.speechDetected) {
+      if (this.silenceStart === null) {
+        this.silenceStart = performance.now();
+      } else if (performance.now() - this.silenceStart > this.silenceDurationMs) {
+        this.monitoring = false;
+        onSilenceDetected();
+        return;
+      }
+    }
+    requestAnimationFrame(() => this._monitor(onSilenceDetected));
+  }
+
+  stop() {
+    return new Promise(resolve => {
+      this.monitoring = false;
+      this.recorder.onstop = () => {
+        this.stream.getTracks().forEach(t => t.stop());
+        this.audioContext.close();
+        resolve(new Blob(this.chunks, { type: 'audio/webm' }));
+      };
+      if (this.recorder.state === 'recording') this.recorder.stop();
+      else resolve(new Blob(this.chunks, { type: 'audio/webm' }));
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// AVATAR2D: a simple canvas face whose mouth opens based on the AI's TTS
+// audio amplitude, with idle blinking. Free, browser-side, no extra API.
+// ---------------------------------------------------------------------------
+class Avatar2D {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.mouthOpenness = 0;
+    this.blinkState = 1;
+    this.lastBlink = performance.now();
+    this.running = true;
+    this._draw();
+  }
+
+  connectAudio(audioEl) {
+    if (!this.audioContext) this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    if (this.source) { try { this.source.disconnect(); } catch (e) {} }
+    this.source = this.audioContext.createMediaElementSource(audioEl);
+    this.analyser = this.audioContext.createAnalyser();
+    this.analyser.fftSize = 512;
+    this.source.connect(this.analyser);
+    this.analyser.connect(this.audioContext.destination);
+    this.dataArray = new Uint8Array(this.analyser.fftSize);
+  }
+
+  _updateMouth() {
+    if (!this.analyser) { this.mouthOpenness *= 0.85; return; }
+    this.analyser.getByteTimeDomainData(this.dataArray);
+    let sum = 0;
+    for (let i = 0; i < this.dataArray.length; i++) {
+      const v = (this.dataArray[i] - 128) / 128;
+      sum += v * v;
+    }
+    const rms = Math.sqrt(sum / this.dataArray.length);
+    this.mouthOpenness = Math.min(1, rms * 6);
+  }
+
+  _draw() {
+    if (!this.running) return;
+    this._updateMouth();
+    const now = performance.now();
+    if (now - this.lastBlink > 3500 + Math.random() * 2000) {
+      this.blinkState = 0;
+      this.lastBlink = now;
+    }
+    if (this.blinkState < 1) {
+      this.blinkState = Math.min(1, this.blinkState + 0.15);
+    }
+
+    const ctx = this.ctx;
+    const w = this.canvas.width, h = this.canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.fillStyle = '#f0c9a0';
+    ctx.beginPath();
+    ctx.ellipse(w / 2, h / 2, w * 0.32, h * 0.38, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    const eyeY = h * 0.42, eyeOffsetX = w * 0.13, eyeH = Math.max(1, 7 * this.blinkState);
+    ctx.fillStyle = '#2c2c2c';
+    [-1, 1].forEach(dir => {
+      ctx.beginPath();
+      ctx.ellipse(w / 2 + dir * eyeOffsetX, eyeY, 6, eyeH, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    const mouthY = h * 0.62, mouthW = w * 0.18, mouthH = 4 + this.mouthOpenness * 22;
+    ctx.fillStyle = '#8a3b2f';
+    ctx.beginPath();
+    ctx.ellipse(w / 2, mouthY, mouthW, mouthH, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    requestAnimationFrame(() => this._draw());
+  }
+}
+
+// ---------------------------------------------------------------------------
+// INTERVIEW MODE
+// ---------------------------------------------------------------------------
+let resumeId = null;
+let interviewDomain = '';
+let interviewDuration = null;
+let interviewCameraOn = false;
+let interviewSessionId = null;
+let interviewTimerInterval = null;
+let interviewElapsed = 0;
+let interviewActive = false;
+let interviewAvatar = null;
+let interviewVideoStream = null;
+let interviewTracker = null;
+let interviewPoseLoopActive = false;
+let currentListener = null;
+
+document.getElementById('resumeFile').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('resumeStatus').textContent = 'Uploading and parsing...';
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch('/api/interview/resume', { method: 'POST', body: formData });
+  const data = await res.json();
+  if (!res.ok) {
+    document.getElementById('resumeStatus').textContent = data.detail || 'Failed to parse resume.';
+    return;
+  }
+  resumeId = data.resume_id;
+  document.getElementById('resumeStatus').textContent = `Uploaded: ${data.filename}`;
+  updateInterviewStartBtn();
+});
+
+document.getElementById('domainInput').addEventListener('input', (e) => {
+  interviewDomain = e.target.value.trim();
+  updateInterviewStartBtn();
+});
+
+document.querySelectorAll('#interviewDurationOptions .option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#interviewDurationOptions .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    interviewDuration = parseInt(btn.dataset.seconds, 10);
+    updateInterviewStartBtn();
+  });
+});
+
+document.querySelectorAll('#interviewCameraOptions .option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#interviewCameraOptions .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    interviewCameraOn = btn.dataset.camera === 'on';
+  });
+});
+
+function updateInterviewStartBtn() {
+  const btn = document.getElementById('interviewStartBtn');
+  if (resumeId && interviewDomain && interviewDuration) {
+    btn.disabled = false;
+    btn.textContent = 'Start interview';
+  } else {
+    btn.disabled = true;
+    btn.textContent = 'Upload a resume, enter a role, and pick a duration';
+  }
+}
+
+function runInterviewPoseLoop(videoEl) {
+  interviewPoseLoopActive = true;
+  function loop() {
+    if (!interviewPoseLoopActive) return;
+    if (poseLandmarker && videoEl.readyState >= 2) {
+      const result = poseLandmarker.detectForVideo(videoEl, performance.now());
+      if (result.landmarks && result.landmarks[0]) analyzePoseFrame(result.landmarks[0], interviewTracker);
+    }
+    setTimeout(loop, 500);
+  }
+  loop();
+}
+
+async function playInterviewAudio(text, audioUrl) {
+  document.getElementById('interviewSubtitle').textContent = text;
+  document.getElementById('interviewStatus').textContent = 'Interviewer is asking...';
+  const audioEl = new Audio(audioUrl);
+  interviewAvatar.connectAudio(audioEl);
+  await new Promise(resolve => {
+    audioEl.onended = resolve;
+    audioEl.play();
+  });
+}
+
+async function startListeningForAnswer() {
+  if (!interviewActive) return;
+  document.getElementById('interviewStatus').textContent = 'Listening for your answer...';
+  currentListener = new AutoListener();
+  await currentListener.start(async () => {
+    if (!interviewActive) return;
+    const blob = await currentListener.stop();
+    await handleInterviewTurn(blob);
+  });
+}
+
+async function handleInterviewTurn(blob) {
+  document.getElementById('interviewStatus').textContent = 'Thinking...';
+  const formData = new FormData();
+  formData.append('audio', blob, 'answer.webm');
+  const res = await fetch(`/api/interview/${interviewSessionId}/message`, { method: 'POST', body: formData });
+  if (!res.ok) {
+    if (interviewActive) startListeningForAnswer();
+    return;
+  }
+  const data = await res.json();
+  if (!interviewActive) return;
+  await playInterviewAudio(data.ai_text, data.ai_audio_url);
+  if (interviewActive) startListeningForAnswer();
+}
+
+document.getElementById('interviewStartBtn').addEventListener('click', async () => {
+  const res = await fetch('/api/interview/start', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      resume_id: resumeId, domain: interviewDomain,
+      target_duration_seconds: interviewDuration, camera_enabled: interviewCameraOn,
+    }),
+  });
+  const data = await res.json();
+  interviewSessionId = data.session_id;
+
+  document.getElementById('interviewSetup').classList.add('hidden');
+  document.getElementById('interviewRunning').classList.remove('hidden');
+
+  interviewAvatar = new Avatar2D(document.getElementById('avatarCanvas'));
+
+  interviewTracker = { shoulderTilts: [], headTilts: [], handsBelowWaistCount: 0, noseX: [], noseY: [], shoulderWidths: [], samples: 0 };
+  if (interviewCameraOn) {
+    interviewVideoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const preview = document.getElementById('interviewCameraPreview');
+    preview.srcObject = interviewVideoStream;
+    preview.classList.remove('hidden');
+    await ensurePoseLandmarker();
+    runInterviewPoseLoop(preview);
+  }
+
+  interviewActive = true;
+  interviewElapsed = 0;
+  const timerEl = document.getElementById('interviewTimer');
+  interviewTimerInterval = setInterval(() => {
+    interviewElapsed++;
+    const remaining = interviewDuration - interviewElapsed;
+    if (remaining <= 0) { finishInterview(); return; }
+    const m = Math.floor(remaining / 60), s = remaining % 60;
+    timerEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+  }, 1000);
+
+  await playInterviewAudio(data.question_text, data.question_audio_url);
+  if (interviewActive) startListeningForAnswer();
+});
+
+async function finishInterview() {
+  if (!interviewActive) return;
+  interviewActive = false;
+  interviewPoseLoopActive = false;
+  clearInterval(interviewTimerInterval);
+  if (currentListener) { try { await currentListener.stop(); } catch (e) {} }
+  if (interviewVideoStream) interviewVideoStream.getTracks().forEach(t => t.stop());
+  if (interviewAvatar) interviewAvatar.running = false;
+
+  document.getElementById('interviewStatus').textContent = 'Generating your interview report...';
+
+  if (interviewCameraOn) {
+    const landmarkSummary = summarizeTracker(interviewTracker);
+    await fetch(`/api/monologue/${interviewSessionId}/posture`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ landmark_summary: landmarkSummary, keyframes: null }),
+    });
+  }
+
+  const res = await fetch(`/api/interview/${interviewSessionId}/end`, { method: 'POST' });
+  const report = await res.json();
+  if (!res.ok) {
+    document.getElementById('interviewStatus').textContent = report.detail || 'Could not generate a report - answer at least one question.';
+    return;
+  }
+
+  document.getElementById('reportScore').textContent = report.overall_score + '/100';
+
+  const strengthsList = document.getElementById('reportStrengths');
+  strengthsList.innerHTML = '';
+  (report.strengths || []).forEach(s => {
+    const li = document.createElement('li');
+    li.textContent = s;
+    strengthsList.appendChild(li);
+  });
+
+  const weaknessesList = document.getElementById('reportWeaknesses');
+  weaknessesList.innerHTML = '';
+  (report.weaknesses || []).forEach(w => {
+    const li = document.createElement('li');
+    li.textContent = w;
+    weaknessesList.appendChild(li);
+  });
+
+  const answersDiv = document.getElementById('reportAnswers');
+  answersDiv.innerHTML = '';
+  (report.improved_answers || []).forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'grammar-card';
+    div.innerHTML = `<div class="grammar-pattern">${a.question}</div>
+      <div class="grammar-example wrong">${a.your_answer}</div>
+      <div class="grammar-example right">${a.better_answer}</div>`;
+    answersDiv.appendChild(div);
+  });
+
+  document.getElementById('reportSummary').textContent = report.summary;
+
+  document.getElementById('interviewRunning').classList.add('hidden');
+  document.getElementById('interviewReport').classList.remove('hidden');
+}
+
+document.getElementById('interviewEndBtn').addEventListener('click', finishInterview);
+
+document.getElementById('interviewNewBtn').addEventListener('click', () => {
+  document.getElementById('interviewReport').classList.add('hidden');
+  document.getElementById('interviewSetup').classList.remove('hidden');
+  resumeId = null;
+  interviewDomain = '';
+  interviewDuration = null;
+  interviewCameraOn = false;
+  document.getElementById('resumeFile').value = '';
+  document.getElementById('resumeStatus').textContent = '';
+  document.getElementById('domainInput').value = '';
+  document.querySelectorAll('#interviewDurationOptions .option-btn, #interviewCameraOptions .option-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('#interviewCameraOptions [data-camera="off"]').classList.add('active');
+  updateInterviewStartBtn();
+});
+
+// ---------------------------------------------------------------------------
 // PROGRESS MODE
 // ---------------------------------------------------------------------------
 let progressChart = null;
@@ -691,6 +1893,7 @@ async function loadProgress() {
 // ---------------------------------------------------------------------------
 startConversation();
 loadMonologueTopic();
+loadDescribeImage();
 </script>
 </body>
 </html>

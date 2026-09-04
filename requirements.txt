@@ -3,3 +3,7 @@ uvicorn[standard]
 python-dotenv
 openai>=1.0,<2.0
 python-multipart
+requests
+azure-cognitiveservices-speech
+pypdf
+python-docx
