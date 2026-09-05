@@ -130,5 +130,3 @@ If you contribute new setup steps, please update this README so others can repro
 ## License
 
 No license file is currently present in this repository.
-
-If you are the project owner, consider adding a `LICENSE` file (for example MIT, Apache-2.0, or GPL-3.0) to define reuse terms.
